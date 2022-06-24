@@ -1,0 +1,6 @@
+apiVersion: v2
+name: starwars-website
+version: 1.0.0
+deprecated: false
+appVersion: 1.0.0
+

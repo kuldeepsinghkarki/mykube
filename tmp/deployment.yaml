@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: starwars.com
+  name: starwars.com
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: starwars.com
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: starwars.com
+    spec:
+      containers:
+      - image: localhost:5000/starwars
+        name: starwars-com
+        resources: {}
+status: {}
