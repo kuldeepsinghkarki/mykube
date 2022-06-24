@@ -1,0 +1,63 @@
+apiVersioni: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Values.appName }}
+  namei: {{ .Values.appName }}-{{ .Values.serviceName }}
+spec:
+  ports:
+  - name: 80-80
+    port: {{ .Values.portNumber }}
+    protocol: TCP
+    targetPort: {{ .Values.portNumber }}
+  selector:
+    app: {{ .Values.appName }}
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.appName }}
+  name: {{ .Values.appName }}
+spec:
+  replicas: {{ .Values.replicaSize }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+      - image: {{ .Values.imageName }}
+        name: {{ .Values.appName }} - {{ randAlpha 5 | lower }}
+        ports:
+          - containerPort: {{ .Values.portNumber }}
+        resources: {}
+status: {}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.appName }}
+spec:
+  rules:
+  - host: {{ .Values.appName }}.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Values.appName }}-svc
+            port:
+              number: {{ .Values.portNumber }}
+        path: /
+        pathType: Prefix
+status:
+  loadBalancer: {}
